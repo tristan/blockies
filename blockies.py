@@ -4,6 +4,9 @@ from PIL import Image, ImageDraw, ImageColor
 from io import BytesIO
 import ctypes
 import base64
+import logging
+
+log = logging.getLogger('blockies')
 
 DEFAULT_SIZE = 8
 DEFAULT_SCALE = 4
@@ -23,7 +26,6 @@ def int32(num):
 class Context:
 
     def __init__(self, seed, randseed_len=DEFAULT_RANDSEED_LEN):
-        print(seed)
         randseed = self.randseed = [0] * randseed_len
         for i in range(len(seed)):
             randseed[i % randseed_len] = int32(randseed[i % randseed_len] << 5) - randseed[i % randseed_len] + ord(seed[i])
@@ -36,7 +38,7 @@ class Context:
             randseed[i] = randseed[i + 1]
 
         idx = len(randseed) - 1
-        randseed[idx] = randseed[idx] ^ (int32(randseed[idx]) >> 19) ^ t ^ (t >> 8)
+        randseed[idx] = int32(randseed[idx]) ^ (int32(randseed[idx]) >> 19) ^ t ^ (t >> 8)
         return zero_fill_right_shift(randseed[idx], 0) / zero_fill_right_shift((1 << 31), 0)
 
     def create_color(self):
@@ -45,7 +47,12 @@ class Context:
         s = ((self.rand() * 60) + 40)
         l = ((self.rand() + self.rand() + self.rand() + self.rand()) * 25)
         # round percentages as PIL doesn't like them
-        return ImageColor.getrgb("hsl({},{}%,{}%)".format(h, round(s), round(l)))
+        hsl = "hsl({},{}%,{}%)".format(h, round(s), round(l))
+        try:
+            return ImageColor.getrgb(hsl)
+        except:
+            log.exception("produced invalid color: {}".format(hsl))
+            return (0, 0, 0)
 
     def create_image_data(self, size):
         width = size
