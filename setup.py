@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='blockies',
-    version='0.0.2',
+    version='0.0.3',
     author='Tristan King',
     author_email='tristan.king@gmail.com',
     py_modules=['blockies'],
