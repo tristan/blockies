@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "blockies"
+version = "0.0.4"
+authors = [
+  { name = "Tristan King", email = "tristan.king@gmail.com" },
+]
+description = "A tiny library for generating blocky identicons."
+readme = "README.md"
+requires-python = ">=3.8"
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "Pillow>=7.0.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/tristan/blockies"
+Issues = "https://github.com/tristan/blockies/issues"
